@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zero-Waste Campus Subnetting</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>Zero-Waste Campus Subnetting</h1>
+    <p class="lede">Each facility gets the smallest block that holds its hosts. Change the address block or the requirements and the whole plan recalculates.</p>
+  </header>
+
+  <div class="layout">
+    <aside class="panel" aria-label="Requirements">
+      <h2>Requirements</h2>
+      <div class="field">
+        <label class="lab" for="base">Address block (CIDR)</label>
+        <input id="base" class="mono" type="text" value="192.168.50.0/24" spellcheck="false" autocomplete="off" inputmode="decimal">
+        <p id="baseErr" class="err" hidden></p>
+        <p id="baseNote" class="note" hidden></p>
+      </div>
+      <div class="field">
+        <div class="rowhead"><span></span><span class="lab">Facility</span><span class="lab">Hosts</span><span></span></div>
+        <div id="rows" class="rows"></div>
+      </div>
+      <div class="btns">
+        <button id="add" class="btn" type="button">Add facility</button>
+        <button id="reset" class="btn ghost" type="button">Reset to campus</button>
+      </div>
+      <p class="note">Hosts means usable device addresses. Each block also needs one network and one broadcast address.</p>
+    </aside>
+
+    <main class="out" id="out">
+      <div id="alert" class="alert" role="status" hidden></div>
+
+      <section aria-labelledby="h-sum">
+        <h2 id="h-sum" class="sr">Summary</h2>
+        <div id="stats" class="stats"></div>
+      </section>
+
+      <section aria-labelledby="h-map">
+        <h2 id="h-map">Address map</h2>
+        <p class="hint" id="mapHint"></p>
+        <div id="map"></div>
+      </section>
+
+      <section aria-labelledby="h-topo">
+        <h2 id="h-topo">Network topology</h2>
+        <p class="hint">How the plan maps onto a network: one router, one switch, one VLAN and subnet per facility. Each gateway is the first usable address of its subnet.</p>
+        <div id="topo" class="topo"></div>
+      </section>
+
+      <section aria-labelledby="h-tbl">
+        <div class="sechead">
+          <h2 id="h-tbl">Allocation table</h2>
+          <button id="copy" class="btn ghost" type="button">Copy table</button>
+        </div>
+        <div class="scroll"><table id="tbl"></table></div>
+        <textarea id="copybox" aria-label="Table text to copy" readonly hidden></textarea>
+      </section>
+
+      <section aria-labelledby="h-work">
+        <h2 id="h-work">How each size was chosen</h2>
+        <p class="hint">Block size is the smallest power of two that holds the hosts plus the network and broadcast addresses. Placing the largest block first keeps every block aligned on its own boundary, so nothing is lost to gaps.</p>
+        <ol id="work" class="work"></ol>
+      </section>
+
+      <section aria-labelledby="h-cmp">
+        <div class="sechead">
+          <h2 id="h-cmp">Versus one fixed size</h2>
+          <label for="fixedP">Fixed prefix <select id="fixedP"></select></label>
+        </div>
+        <div class="scroll"><table id="cmp"></table></div>
+        <p id="cmpNote" class="cmpnote"></p>
+      </section>
+    </main>
+  </div>
+</div>
+
+
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
