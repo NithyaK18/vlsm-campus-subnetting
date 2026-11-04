@@ -60,6 +60,31 @@ function calculate(base,rows){
   return {c:c,valid:valid,badIdx:badIdx,placed:placed,failed:failed,free:free,used:off};
 }
 
+function applyHeadroom(rows, pct) {
+  return rows.map(function (r) {
+    var h = Number(r.hosts);
+    return Number.isInteger(h) && h >= 1
+      ? { name: r.name, hosts: String(Math.ceil(h * (1 + pct / 100))) }
+      : r;
+  });
+}
+
+function linkRows(count) {
+  var out = [];
+  for (var i = 1; i <= count; i++) out.push({ name: "Router link " + i, hosts: "2" });
+  return out;
+}
+
+function toCsv(result) {
+  var q = function (v) { return '"' + String(v).replace(/"/g, '""') + '"'; };
+  var lines = ["Facility,Hosts,Network,Prefix,Mask,First,Last,Broadcast,Spare"];
+  result.placed.forEach(function (p) {
+    lines.push([q(p.name), p.hosts, p.network, "/" + p.prefix, p.mask, p.first, p.last, p.bcast, p.spare].join(","));
+  });
+  return lines.join("\n");
+}
+
 if (typeof module !== "undefined") {
-  module.exports = { calculate: calculate, parseCidr: parseCidr, ipToInt: ipToInt, intToIp: intToIp };
+  module.exports = { calculate: calculate, parseCidr: parseCidr, ipToInt: ipToInt, intToIp: intToIp,
+    applyHeadroom: applyHeadroom, linkRows: linkRows, toCsv: toCsv };
 }
